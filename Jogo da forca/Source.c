@@ -19,6 +19,7 @@ int main()
 	tamanhoPalavraSorteada = strlen(palavraSorteada); //Calculando o tamanho da palavra sorteada
 	palavraDigitada[tamanhoPalavraSorteada] = '\0'; //Adicionando o caractere nulo no final da palavra digitada
 
+	//Imprimindo a mensagem de boas vindas e dica
 	printf_s("Bem vindo ao Jogo da Forca!\n");
 	printf_s("Dica: ANIMAL\n\n");
 
@@ -56,9 +57,11 @@ int main()
 				palavraDigitada[i] = letraDigitada;
 				acertouLetra = 1;
 			}
+			//Se espaço, mantém espaço
 			if (palavraSorteada[i] == ' ') palavraDigitada[i] = ' ';
 		}
 
+		//Se não acertou a letra, incrementa a tentativa
 		if (acertouLetra == 0)
 			tentativa++;
 		else acertouLetra = 0;
@@ -77,11 +80,9 @@ int main()
 				printf_s(" _ ");
 		}
 
+		//Verifica se o jogador acertou a palavra e se jogador enforcou
 		if (strcmp(palavraSorteada, palavraDigitada) == 0) acertou = 1;
-		if (tentativa == 5)
-		{
-			enforcado = 1;
-		}
+		if (tentativa == 5) enforcado = 1;
 
 		printf_s("\n\n");
 	}
