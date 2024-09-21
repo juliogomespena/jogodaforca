@@ -1,10 +1,6 @@
 //Headers
 #include <stdio.h>  
 
-//Variáveis globais
-int acertou = 0; //Variável para verificar se o jogador acertou a palavra
-int enforcado = 0; //Variável para verificar se o jogador foi enforcado
-
 //Função para imprimir a forca
 void ImprimirForca(int tentativa)
 {
@@ -120,67 +116,27 @@ char Chutar()
 	return letraDigitada;
 }
 
-//Função de loop do jogo
-void IniciarJogo(char palavraSorteada[], int tamanhoPalavraSorteada, int tentativa)
+// Função para verificar chute
+int VerificarChute(char palavraSorteada[], char palavraDigitada[], char letraDigitada, int tamanhoPalavraSorteada)
 {
-	//Declarando variáveis
-	char palavraDigitada[200]; //Palavra que o jogador irá digitar
-	int acertouLetra = 0; //Variável para verificar se o jogador acertou a letra
-	
-	palavraDigitada[tamanhoPalavraSorteada] = '\0'; //Adicionando o caractere nulo no final da palavra digitada
+	int acertouLetra = 0; // Variável para verificar se o jogador acertou a letra
 
-	//Iniciando o jogo
-	while (!acertou && !enforcado)
+	// Loop para verificar chute
+	for (int i = 0; i < tamanhoPalavraSorteada; i++)
 	{
-		//Declara letraDigitada e recebe valor de Chutar();
-		char letraDigitada = Chutar();
-
-		printf("\n\n\n");
-
-		//Loop para verificar chute
-		for (int i = 0; i < tamanhoPalavraSorteada; i++)
+		// Se a letra digitada for igual a letra da palavra sorteada, a letra digitada é inserida na palavra digitada
+		if (palavraSorteada[i] == letraDigitada)
 		{
-			//Se a letra digitada for igual a letra da palavra sorteada, a letra digitada é inserida na palavra digitada
-			if (palavraSorteada[i] == letraDigitada)
-			{
-				palavraDigitada[i] = letraDigitada;
-				acertouLetra = 1;
-			}
+			palavraDigitada[i] = letraDigitada;
+			acertouLetra = 1;
 		}
-
-		//Se não acertou a letra, incrementa a tentativa
-		if (acertouLetra == 0)
-			tentativa++;
-		else acertouLetra = 0;
-
-		//Chama funcão para imprimir a forca
-		ImprimirForca(tentativa);
-
-		for (int i = 0; i < tamanhoPalavraSorteada; i++)
-		{
-			//Escreve os _ para as letras que ainda não foram digitadas e as letras que já foram digitadas
-			if (palavraSorteada[i] == ' ')
-				printf_s("   ");
-			else if (palavraSorteada[i] == palavraDigitada[i])
-				printf_s(" %c ", palavraDigitada[i]);
-			else
-				printf_s(" _ ");
-
-			//Se espaço, mantém espaço
-			if (palavraSorteada[i] == ' ') palavraDigitada[i] = ' ';
-		}
-
-		//Verifica se o jogador acertou a palavra ou se jogador enforcou
-		if (strcmp(palavraSorteada, palavraDigitada) == 0) acertou = 1;
-		if (tentativa == 5) enforcado = 1;
-
-		printf_s("\n\n");
 	}
-	return;
+
+	return acertouLetra;
 }
 
 //Função para imprimir o resultado do jogo
-void ResultadoJogo()
+void ResultadoJogo(int acertou, int enforcado)
 {
 	//Imprimindo mensagem de vitória ou derrota
 	if (enforcado == 1)
@@ -219,6 +175,60 @@ void ResultadoJogo()
 	}
 }
 
+// Função de loop do jogo
+void IniciarJogo(char palavraSorteada[], int tamanhoPalavraSorteada, int tentativa)
+{
+	// Declarando variáveis
+	int acertou = 0; //Variável para verificar se o jogador acertou a palavra
+	int enforcado = 0; //Variável para verificar se o jogador foi enforcado
+	char palavraDigitada[200]; // Palavra que o jogador irá digitar
+	int acertouLetra = 0; // Variável para verificar se o jogador acertou a letra
+
+	palavraDigitada[tamanhoPalavraSorteada] = '\0'; // Adicionando o caractere nulo no final da palavra digitada
+
+	// Iniciando o jogo
+	while (!acertou && !enforcado)
+	{
+		// Declara letraDigitada e recebe valor de Chutar();
+		char letraDigitada = Chutar();
+
+		printf("\n\n\n");
+
+		// Verifica chute
+		acertouLetra = VerificarChute(palavraSorteada, palavraDigitada, letraDigitada, tamanhoPalavraSorteada);
+
+		// Se não acertou a letra, incrementa a tentativa
+		if (acertouLetra == 0)
+			tentativa++;
+		else acertouLetra = 0;
+
+		// Chama funcão para imprimir a forca
+		ImprimirForca(tentativa);
+
+		for (int i = 0; i < tamanhoPalavraSorteada; i++)
+		{
+			// Escreve os _ para as letras que ainda não foram digitadas e as letras que já foram digitadas
+			if (palavraSorteada[i] == ' ')
+				printf_s("   ");
+			else if (palavraSorteada[i] == palavraDigitada[i])
+				printf_s(" %c ", palavraDigitada[i]);
+			else
+				printf_s(" _ ");
+
+			// Se espaço, mantém espaço
+			if (palavraSorteada[i] == ' ') palavraDigitada[i] = ' ';
+		}
+
+		// Verifica se o jogador acertou a palavra ou se jogador enforcou
+		if (strcmp(palavraSorteada, palavraDigitada) == 0) acertou = 1;
+		if (tentativa == 5) enforcado = 1;
+
+		printf_s("\n\n");
+	}
+	ResultadoJogo(acertou, enforcado);
+	return;
+}
+
 //Função principal do jogo
 int main()
 {
@@ -232,7 +242,7 @@ int main()
 
 	//Imprimindo a mensagem de boas vindas e dica
 	printf_s("Bem vindo ao Jogo da Forca!\n");
-	printf_s("Dica: ANIMAL\n\n");
+	printf_s("Dica: SUPLEMENTO\n\n");
 
 	//Chama funcão para imprimir a forca pela primeira vez
 	ImprimirForca(tentativa);
@@ -247,10 +257,8 @@ int main()
 			printf_s(" _ ");
 	}
 
-	//Inicia o loop do jogo
+	//Inicia o jogo
 	IniciarJogo(palavraSorteada, tamanhoPalavraSorteada, tentativa);
-
-	ResultadoJogo();
 
 	printf_s("\n\n");
 
