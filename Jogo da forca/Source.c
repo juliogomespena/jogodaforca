@@ -117,7 +117,7 @@ char Chutar()
 }
 
 // Função para verificar chute
-int VerificarChute(char palavraSorteada[], char palavraDigitada[], char letraDigitada, int tamanhoPalavraSorteada)
+int VerificarChute(char palavraSorteada[], char palavraDigitada[], char letraDigitada, int tamanhoPalavraSorteada, int* tentativa)
 {
 	int acertouLetra = 0; // Variável para verificar se o jogador acertou a letra
 
@@ -131,6 +131,11 @@ int VerificarChute(char palavraSorteada[], char palavraDigitada[], char letraDig
 			acertouLetra = 1;
 		}
 	}
+
+	// Se não acertou a letra, incrementa a tentativa
+	if (acertouLetra == 0)
+		(*tentativa)++; //Incrementa endereço de memória da tentativa na função IniciarJogo
+	else acertouLetra = 0;
 
 	return acertouLetra;
 }
@@ -195,12 +200,9 @@ void IniciarJogo(char palavraSorteada[], int tamanhoPalavraSorteada, int tentati
 		printf("\n\n\n");
 
 		// Verifica chute
-		acertouLetra = VerificarChute(palavraSorteada, palavraDigitada, letraDigitada, tamanhoPalavraSorteada);
+		acertouLetra = VerificarChute(palavraSorteada, palavraDigitada, letraDigitada, tamanhoPalavraSorteada, &tentativa);
 
-		// Se não acertou a letra, incrementa a tentativa
-		if (acertouLetra == 0)
-			tentativa++;
-		else acertouLetra = 0;
+		printf_s("%d %d\n", tentativa, &tentativa);
 
 		// Chama funcão para imprimir a forca
 		ImprimirForca(tentativa);
