@@ -1,8 +1,17 @@
 //Headers
 #include <stdio.h>  
 
+//Função para sortear a palavra
+void SortearPalavra(char* palavraSorteada[])
+{
+	char palavrasParaSorteio[10][200] = { "WHEY PROTEIN", "CREATINA", "BCAA", "GLUTAMINA", "OXIDO NITRICO", "HIPERCALORICO", "TERMOGENICO", "AMINOACIDO", "PROTEINA", "CARBOIDRATO" }; //Palavras para sorteio
+	srand(time(NULL)); //Iniciando a semente para o rand
+	int indiceSorteado = rand() % 10; //Sorteando um índice para a palavra
+	sprintf_s(palavraSorteada, 200, "%s", palavrasParaSorteio[indiceSorteado]); //Atribuindo a palavra sorteada
+}
+
 //Função para imprimir a forca
-void ImprimirForca(int tentativa)
+void ImprimirForca(char palavraSorteada[], char palavraDigitada[], int tamanhoPalavraSorteada, int tentativa)
 {
 	switch (tentativa)
 	{
@@ -99,6 +108,22 @@ void ImprimirForca(int tentativa)
 		default:
 			break;
 	}
+
+	//Escreve os espaços e as letras já advinhadas
+	for (int i = 0; i < tamanhoPalavraSorteada; i++)
+	{
+		// Se espaço, mantém espaço
+		if (palavraSorteada[i] == ' ') palavraDigitada[i] = ' ';
+
+		// Escreve os _ para as letras que ainda não foram digitadas e as letras que já foram digitadas
+		if (palavraSorteada[i] == ' ')
+			printf_s("   ");
+		else if (palavraSorteada[i] == palavraDigitada[i])
+			printf_s(" %c ", palavraDigitada[i]);
+		else
+			printf_s(" _ ");
+	}
+
 	return;
 }
 
@@ -181,15 +206,12 @@ void ResultadoJogo(int acertou, int enforcado)
 }
 
 // Função de loop do jogo
-void IniciarJogo(char palavraSorteada[], int tamanhoPalavraSorteada, int tentativa)
+void IniciarJogo(char palavraSorteada[], char palavraDigitada[], int tamanhoPalavraSorteada, int tentativa)
 {
 	// Declarando variáveis
 	int acertou = 0; //Variável para verificar se o jogador acertou a palavra
 	int enforcado = 0; //Variável para verificar se o jogador foi enforcado
-	char palavraDigitada[200]; // Palavra que o jogador irá digitar
 	int acertouLetra = 0; // Variável para verificar se o jogador acertou a letra
-
-	palavraDigitada[tamanhoPalavraSorteada] = '\0'; // Adicionando o caractere nulo no final da palavra digitada
 
 	// Iniciando o jogo
 	while (!acertou && !enforcado)
@@ -202,24 +224,8 @@ void IniciarJogo(char palavraSorteada[], int tamanhoPalavraSorteada, int tentati
 		// Verifica chute
 		acertouLetra = VerificarChute(palavraSorteada, palavraDigitada, letraDigitada, tamanhoPalavraSorteada, &tentativa);
 
-		printf_s("%d %d\n", tentativa, &tentativa);
-
 		// Chama funcão para imprimir a forca
-		ImprimirForca(tentativa);
-
-		for (int i = 0; i < tamanhoPalavraSorteada; i++)
-		{
-			// Escreve os _ para as letras que ainda não foram digitadas e as letras que já foram digitadas
-			if (palavraSorteada[i] == ' ')
-				printf_s("   ");
-			else if (palavraSorteada[i] == palavraDigitada[i])
-				printf_s(" %c ", palavraDigitada[i]);
-			else
-				printf_s(" _ ");
-
-			// Se espaço, mantém espaço
-			if (palavraSorteada[i] == ' ') palavraDigitada[i] = ' ';
-		}
+		ImprimirForca(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa);
 
 		// Verifica se o jogador acertou a palavra ou se jogador enforcou
 		if (strcmp(palavraSorteada, palavraDigitada) == 0) acertou = 1;
@@ -237,32 +243,35 @@ int main()
 	//Declarando variáveis  
 	char palavraSorteada[200]; //Palavra que será usada para o jogo
 	int tamanhoPalavraSorteada; //Tamanho da palavra sorteada
-	int tentativa = 0; //Tentativas do jogador
+	char palavraDigitada[200]; // Palavra que o jogador irá digitar
+	int jogarNovamente = 1; //Variável para verificar se o jogador quer jogar novamente
 
-	sprintf_s(palavraSorteada, sizeof(palavraSorteada), "WHEY PROTEIN"); //Input de palavra temporário
-	tamanhoPalavraSorteada = strlen(palavraSorteada); //Calculando o tamanho da palavra sorteada
-
-	//Imprimindo a mensagem de boas vindas e dica
-	printf_s("Bem vindo ao Jogo da Forca!\n");
-	printf_s("Dica: SUPLEMENTO\n\n");
-
-	//Chama funcão para imprimir a forca pela primeira vez
-	ImprimirForca(tentativa);
-
-	//Imprimindo os espaços a serem preenchidos
-	for (int i = 0; i < tamanhoPalavraSorteada; i++)
+	while (jogarNovamente)
 	{
-		//Escreve os _ para cada letra da palavra sorteada
-		if (palavraSorteada[i] == ' ')
-			printf_s("   ");
-		else
-			printf_s(" _ ");
+		int tentativa = 0; //Tentativas do jogador
+
+		//Sorteando a palavra
+		SortearPalavra(&palavraSorteada);
+		tamanhoPalavraSorteada = strlen(palavraSorteada); //Calculando o tamanho da palavra sorteada
+		palavraDigitada[tamanhoPalavraSorteada] = '\0'; // Adicionando o caractere nulo no final da palavra digitada
+
+		//Imprimindo a mensagem de boas vindas e dica
+		printf_s("Bem vindo ao Jogo da Forca!\n");
+		printf_s("Dica: SUPLEMENTO\n\n");
+
+		//Chama funcão para imprimir a forca pela primeira vez
+		ImprimirForca(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa);
+
+		//Inicia o jogo
+		IniciarJogo(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa);
+
+		printf_s("\n\n");
+
+		printf_s("Deseja jogar novamente? 0 - NAO / 1 - SIM: ");
+		scanf_s("%d", &jogarNovamente);
+
+		printf_s("\n\n");
 	}
-
-	//Inicia o jogo
-	IniciarJogo(palavraSorteada, tamanhoPalavraSorteada, tentativa);
-
-	printf_s("\n\n");
 
 	return 0;
 }
