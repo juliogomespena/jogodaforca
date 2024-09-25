@@ -129,6 +129,12 @@
   <ItemGroup>
     <ClCompile Include="Source.c" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="forca.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="palavras.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
