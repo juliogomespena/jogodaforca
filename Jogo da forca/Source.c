@@ -88,7 +88,7 @@ void SortearPalavra(char* palavraSorteada[], char* dica)
 			{
 				//Copia token da palavra para a variável palavraSorteada
 				strcpy_s(palavraSorteada, 200, tk);
-				//Token da dica recebe dia
+				//Token da dica recebe dica
 				nextTk = strtok_s(NULL, "/", &nextTk);
 				//Se dica não for nula
 				if (tk != NULL)
