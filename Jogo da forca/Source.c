@@ -34,6 +34,10 @@ int main()
 
 		printf_s("\n\n");
 
+		AdicionarPalavra();
+
+		printf_s("\n\n");
+
 		printf_s("Deseja jogar novamente? 0 - NAO / 1 - SIM: ");
 		scanf_s("%d", &jogarNovamente);
 
@@ -41,6 +45,49 @@ int main()
 	}
 
 	return 0;
+}
+
+void AdicionarPalavra()
+{
+	//Declarando variáveis
+	char opcaoAdicionar; //Variável para verificar se o jogador quer adicionar uma nova palavra
+	char palavraParaAdd[200];
+
+	printf_s("Deseja adicionar nova palavra? (S/N)");
+	scanf_s(" %c", &opcaoAdicionar);
+
+	opcaoAdicionar = toupper(opcaoAdicionar);
+
+	if (opcaoAdicionar == 'S')
+	{
+		printf_s("Digite a palavra que deseja adicionar no modelo: PALAVRA/DICA\n");
+
+		while(1)
+		{
+			scanf_s("%s", palavraParaAdd, 200);
+			_strupr_s(palavraParaAdd, 200);
+
+			//Checar se string contém '/'
+			if (strchr(palavraParaAdd, '/') == NULL)
+			{
+				printf_s("Formato incorreto! Digite a palavra no modelo: PALAVRA/DICA\n");
+				continue;
+			}
+			else
+			{
+				FILE* F = fopen("palavras.txt", "a");
+
+				fprintf(F, "\n%s", palavraParaAdd);
+
+				fclose(F);
+
+				printf_s("Palavra adicionada com sucesso!\n");
+
+				break;
+			}
+		}
+	}
+	return;
 }
 
 //Função para sortear a palavra
