@@ -1,7 +1,5 @@
-//Headers
-#include <stdio.h>
+//Header
 #include "forca.h"
-#include <string.h>
 
 //Função principal do jogo
 int main()
@@ -11,26 +9,22 @@ int main()
 	while (jogarNovamente)
 	{
 		//Declarando variáveis  
-		char palavraSorteada[200] = { 0 }; //Palavra que será usada para o jogo
+		char palavraSorteada[TAMANHO_STRING] = { 0 }; //Palavra que será usada para o jogo
 		int tamanhoPalavraSorteada; //Tamanho da palavra sorteada
-		char palavraDigitada[200] = { 0 }; // Palavra que o jogador irá digitar
+		char palavraDigitada[TAMANHO_STRING] = { 0 }; // Palavra que o jogador irá digitar
 		int tentativa = 0; //Tentativas do jogador
-		char dica[200] = { 0 }; //Dica para o jogador
+		char dica[TAMANHO_STRING] = { 0 }; //Dica para o jogador
 
 		//Sorteando a palavra
 		SortearPalavra(palavraSorteada, dica);
 		tamanhoPalavraSorteada = strlen(palavraSorteada); //Calculando o tamanho da palavra sorteada
 		palavraDigitada[tamanhoPalavraSorteada] = '\0'; // Adicionando o caractere nulo no final da palavra digitada
 
-		//Imprimindo a mensagem de boas vindas e dica
-		printf_s("Bem vindo ao Jogo da Forca!\n");
-		printf_s("Dica: %s\n\n", dica);
-
 		//Chama funcão para imprimir a forca pela primeira vez
-		ImprimirForca(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa);
+		ImprimirForca(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa, dica);
 
 		//Inicia o jogo
-		IniciarJogo(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa);
+		IniciarJogo(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa, dica);
 
 		printf_s("\n\n");
 
@@ -47,11 +41,12 @@ int main()
 	return 0;
 }
 
+//Função para adicionar uma nova palavra
 void AdicionarPalavra()
 {
 	//Declarando variáveis
 	char opcaoAdicionar; //Variável para verificar se o jogador quer adicionar uma nova palavra
-	char palavraParaAdd[200];
+	char palavraParaAdd[TAMANHO_STRING];
 
 	printf_s("Deseja adicionar nova palavra? (S/N)");
 	scanf_s(" %c", &opcaoAdicionar);
@@ -64,8 +59,8 @@ void AdicionarPalavra()
 
 		while(1)
 		{
-			scanf_s("%s", palavraParaAdd, 200);
-			_strupr_s(palavraParaAdd, 200);
+			scanf_s("%s", palavraParaAdd, TAMANHO_STRING);
+			_strupr_s(palavraParaAdd, TAMANHO_STRING);
 
 			//Checar se string contém '/'
 			if (strchr(palavraParaAdd, '/') == NULL)
@@ -124,8 +119,8 @@ void SortearPalavra(char* palavraSorteada[], char* dica)
 
 		for (int i = 0; i <= indiceSorteado; i++)
 		{
-			char linha[200]; //Linha do arquivo
-			fgets(linha, 200, arquivoPalavras); // Lendo a linha sorteada
+			char linha[TAMANHO_STRING]; //Linha do arquivo
+			fgets(linha, TAMANHO_STRING, arquivoPalavras); // Lendo a linha sorteada
 
 			//Separando a palavra da dica
 			char* nextTk = NULL; //Token para receber dica
@@ -134,14 +129,14 @@ void SortearPalavra(char* palavraSorteada[], char* dica)
 			if (tk != NULL)
 			{
 				//Copia token da palavra para a variável palavraSorteada
-				strcpy_s(palavraSorteada, 200, tk);
+				strcpy_s(palavraSorteada, TAMANHO_STRING, tk);
 				//Token da dica recebe dica
 				nextTk = strtok_s(NULL, "/", &nextTk);
 				//Se dica não for nula
 				if (tk != NULL)
 				{
 					//Copia valor do token da dica para variável de dica
-					strcpy_s(dica, 200, nextTk);
+					strcpy_s(dica, TAMANHO_STRING, nextTk);
 				}
 			}
 		}
@@ -150,102 +145,40 @@ void SortearPalavra(char* palavraSorteada[], char* dica)
 }
 
 //Função para imprimir a forca
-void ImprimirForca(char palavraSorteada[], char palavraDigitada[], int tamanhoPalavraSorteada, int tentativa)
+void ImprimirForca(char palavraSorteada[], char palavraDigitada[], int tamanhoPalavraSorteada, int tentativa, char dica[])
 {
-	switch (tentativa)
-	{
-		case 0:
-			//Imprimindo o cabeçalho do jogo  
-			printf_s("/*************************/\n");
-			printf_s("/***** Jogo da Forca *****/\n");
-			printf_s("/*************************/\n");
-			printf_s("					\n");
-			printf_s("  _______			\n");
-			printf_s(" |/      |		\n");
-			printf_s(" |				\n");
-			printf_s(" |				\n");
-			printf_s(" |				\n");
-			printf_s(" |				\n");
-			printf_s(" |				\n");
-			printf_s("_|________	");
-			break;
-		case 1:
-			//Imprimindo o cabeçalho do jogo  
-			printf_s("/*************************/\n");
-			printf_s("/***** Jogo da Forca *****/\n");
-			printf_s("/*************************/\n");
-			printf_s("					\n");
-			printf_s("  _______			\n");
-			printf_s(" |/      |		\n");
-			printf_s(" |      (_)       \n");
-			printf_s(" |				\n");
-			printf_s(" |				\n");
-			printf_s(" |				\n");
-			printf_s(" |			    \n");
-			printf_s("_|________	");
-			break;
-		case 2:
-			//Imprimindo o cabeçalho do jogo  
-			printf_s("/*************************/\n");
-			printf_s("/***** Jogo da Forca *****/\n");
-			printf_s("/*************************/\n");
-			printf_s("					\n");
-			printf_s("  _______			\n");
-			printf_s(" |/      |		\n");
-			printf_s(" |      (_)		\n");
-			printf_s(" |	\\|/		\n");
-			printf_s(" |		\n");
-			printf_s(" |		\n");
-			printf_s(" |        \n");
-			printf_s("_|________	");
-			break;
-		case 3:
-			//Imprimindo o cabeçalho do jogo  
-			printf_s("/*************************/\n");
-			printf_s("/***** Jogo da Forca *****/\n");
-			printf_s("/*************************/\n");
-			printf_s("					\n");
-			printf_s("  _______			\n");
-			printf_s(" |/      |		\n");
-			printf_s(" |      (_)		\n");
-			printf_s(" |	\\|/		\n");
-			printf_s(" |	 |		\n");
-			printf_s(" |			\n");
-			printf_s(" |          \n");
-			printf_s("_|________	");
-			break;
-		case 4:
-			//Imprimindo o cabeçalho do jogo  
-			printf_s("/*************************/\n");
-			printf_s("/***** Jogo da Forca *****/\n");
-			printf_s("/*************************/\n");
-			printf_s("					\n");
-			printf_s("  _______			\n");
-			printf_s(" |/      |		\n");
-			printf_s(" |      (_)		\n");
-			printf_s(" |	\\|/		\n");
-			printf_s(" |	 |		\n");
-			printf_s(" |	/ \\		\n");
-			printf_s(" |          \n");
-			printf_s("_|________	");
-			break;
-		case 5:
-			//Imprimindo o cabeçalho do jogo  
-			printf_s("/*************************/\n");
-			printf_s("/***** Jogo da Forca *****/\n");
-			printf_s("/*************************/\n");
-			printf_s("					\n");
-			printf_s("  _______			\n");
-			printf_s(" |/      |		\n");
-			printf_s(" |      (_)		\n");
-			printf_s(" |	\\|/		\n");
-			printf_s(" |	 |		\n");
-			printf_s(" |	/ \\		\n");
-			printf_s(" |     /   \\      \n");
-			printf_s("_|________	");
-			break;
-		default:
-			break;
+	// Imprimindo o cabeçalho do jogo
+	printf_s("/*************************/\n");
+	printf_s("/***** Jogo da Forca *****/\n");
+	printf_s("/*************************/\n");
+	printf_s("Dica: %s\n\n", dica);
+
+	// Linhas base do desenho da forca
+	char* linhas[] = {
+		"  _______         \n",
+		" |/      |        \n",
+		" |                \n",
+		" |                \n",
+		" |                \n",
+		" |                \n",
+		" |                \n",
+		"_|________        "
+	};
+
+	// Modificando as linhas com base na tentativa
+	if (tentativa >= 1) linhas[2] = " |      (_)       \n";
+	if (tentativa == 2) linhas[3] = " |       |        \n";
+	if (tentativa == 3) linhas[3] = " |      \\|        \n";
+	if (tentativa >= 4) linhas[3] = " |      \\|/       \n";
+	if (tentativa >= 5) linhas[4] = " |       |        \n";
+	if (tentativa == 6) linhas[5] = " |      /         \n";
+	if (tentativa >= 7) linhas[5] = " |      / \\       \n";
+	if (tentativa == 8) linhas[6] = " |     /          \n";
+	if (tentativa >= 9) linhas[6] = " |     /   \\      \n";
+
+	// Imprimindo o desenho da forca
+	for (int i = 0; i < 8; i++) {
+		printf_s("%s", linhas[i]);
 	}
 
 	//Escreve os espaços e as letras já advinhadas
@@ -305,12 +238,13 @@ int VerificarChute(char palavraSorteada[], char palavraDigitada[], char letraDig
 }
 
 //Função para imprimir o resultado do jogo
-void ResultadoJogo(int acertou, int enforcado)
+void ResultadoJogo(char palavraSorteada[], int acertou, int enforcado)
 {
 	//Imprimindo mensagem de vitória ou derrota
 	if (enforcado == 1)
 	{
-		printf_s("Voce foi enforcado!\n\n");
+		printf_s("\nVoce foi enforcado!\n");
+		printf_s("A palavra era: %s!\n\n", palavraSorteada);
 		printf_s("    _______________         \n");
 		printf_s("   /               \\        \n");
 		printf_s("  /                 \\      \n");
@@ -330,7 +264,7 @@ void ResultadoJogo(int acertou, int enforcado)
 	}
 	else if (acertou == 1)
 	{
-		printf_s("Voce acertou!\n\n");
+		printf_s("\nVoce acertou!\n\n");
 		printf_s("       ___________      \n");
 		printf_s("      '._==_==_=_.'     \n");
 		printf_s("      .-\\:      /-.     \n");
@@ -345,14 +279,12 @@ void ResultadoJogo(int acertou, int enforcado)
 }
 
 // Função de loop do jogo
-void IniciarJogo(char palavraSorteada[], char palavraDigitada[], int tamanhoPalavraSorteada, int tentativa)
+void IniciarJogo(char palavraSorteada[], char palavraDigitada[], int tamanhoPalavraSorteada, int tentativa, char dica[])
 {
 	// Declarando variáveis
 	int acertou = 0; //Variável para verificar se o jogador acertou a palavra
 	int enforcado = 0; //Variável para verificar se o jogador foi enforcado
 	int acertouLetra = 0; // Variável para verificar se o jogador acertou a letra
-
-	printf_s("\n\n");
 
 	// Iniciando o jogo
 	while (!acertou && !enforcado)
@@ -366,14 +298,13 @@ void IniciarJogo(char palavraSorteada[], char palavraDigitada[], int tamanhoPala
 		acertouLetra = VerificarChute(palavraSorteada, palavraDigitada, letraDigitada, tamanhoPalavraSorteada, &tentativa);
 
 		// Chama funcão para imprimir a forca
-		ImprimirForca(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa);
+		ImprimirForca(palavraSorteada, palavraDigitada, tamanhoPalavraSorteada, tentativa, dica);
 
 		// Verifica se o jogador acertou a palavra ou se jogador enforcou
 		if (strcmp(palavraSorteada, palavraDigitada) == 0) acertou = 1;
-		if (tentativa == 5) enforcado = 1;
-
-		printf_s("\n\n");
+		if (tentativa == MAX_TENTATIVAS) enforcado = 1;
 	}
-	ResultadoJogo(acertou, enforcado);
+
+	ResultadoJogo(palavraSorteada, acertou, enforcado);
 	return;
 }
